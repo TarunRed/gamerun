@@ -19,9 +19,19 @@ export function animateHeroIn() {
     duration: 0.8,
     ease: 'power2.out',
   }, '-=0.5')
-  .to('.hero-scroll-hint', {
+  .to('.hero-actions', {
+    opacity: 1,
+    duration: 0.6,
+    ease: 'power2.out',
+  }, '-=0.4')
+  .to('.hero-metrics', {
     opacity: 1,
     duration: 0.6,
     ease: 'power2.out',
   }, '-=0.3')
+  .to('.hero-scroll-hint', {
+    opacity: 1,
+    duration: 0.6,
+    ease: 'power2.out',
+  }, '-=0.2')
 }

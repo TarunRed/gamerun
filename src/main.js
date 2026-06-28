@@ -75,8 +75,9 @@ async function init() {
   registerZone(firstModel, 0)
   setLoadProgress(1 / SPORTS.length)
 
-  // Dismiss loader and start immediately
+  // Dismiss loader and reveal app — body.app-ready lifts the FOUC opacity:0
   const loader = document.getElementById('loader')
+  document.body.classList.add('app-ready')
   gsap.to(loader, {
     opacity: 0, duration: 0.5, ease: 'power2.inOut',
     onComplete: () => { loader.style.display = 'none' },
@@ -257,7 +258,7 @@ function createConnectors(zone, labels) {
     const joint = zone.joints[stat.joint] || new THREE.Vector3(0, 1, 0)
     const label = labels[i].obj
     const geo   = new THREE.BufferGeometry().setFromPoints([joint.clone(), label.position.clone()])
-    const mat   = new THREE.LineBasicMaterial({ color: zone.sport.color, transparent: true, opacity: 0 })
+    const mat   = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 })
     zone.group.add(new THREE.Line(geo, mat))
     return { mat }
   })

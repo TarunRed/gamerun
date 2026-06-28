@@ -5,9 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GameRun — AI Sports Analytics</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Critical inline CSS: prevents flash of unstyled content before bundle loads -->
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      html{background:#06070a}
+      body{background:#06070a;color:#e8eaf0;font-family:sans-serif;overflow-x:hidden}
+      #loader{position:fixed;inset:0;z-index:1000;background:#06070a;display:flex;align-items:center;justify-content:center}
+      .loader-inner{text-align:center;width:280px}
+      .loader-logo-img{height:40px;width:auto;display:block;margin:0 auto 2rem;object-fit:contain}
+      .loader-bar{width:100%;height:2px;background:rgba(255,255,255,.1);border-radius:1px;overflow:hidden}
+      .loader-fill{height:100%;width:0%;background:#00f0ff;border-radius:1px}
+      .loader-text{margin-top:1rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#6b7280}
+      #sport-nav,#scroll-container,#marketing-wrapper,#sport-overlay,#labels-root{opacity:0;pointer-events:none}
+    </style>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
     <link rel="preload" href="/models/basketball.glb" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
@@ -43,9 +58,19 @@
         <div class="hero-content">
           <p class="hero-eyebrow">AI-Powered Coaching Advantage</p>
           <h1 class="hero-title">Turn Every<br/>Game Video<br/>Into an Edge.</h1>
-          <p class="hero-sub">Upload game film. Get a pro-level performance report with<br/>exactly what to train and how to fix it — in under 2 minutes.</p>
+          <p class="hero-sub">Upload game film. Get a pro-level performance report with exactly what to train and how to fix it — in under 2 minutes.</p>
+          <div class="hero-actions">
+            <a class="hero-cta" href="https://gamerun.ai" target="_blank">Analyze Your Game Free →</a>
+          </div>
+          <div class="hero-metrics">
+            <div class="hero-metric"><span class="hero-metric-val">2 min</span><span class="hero-metric-label">Analysis time</span></div>
+            <div class="hero-metric-divider"></div>
+            <div class="hero-metric"><span class="hero-metric-val">6</span><span class="hero-metric-label">Sports covered</span></div>
+            <div class="hero-metric-divider"></div>
+            <div class="hero-metric"><span class="hero-metric-val">30+</span><span class="hero-metric-label">Teams using GameRun</span></div>
+          </div>
           <div class="hero-scroll-hint">
-            <span>Scroll to explore 6 sports</span>
+            <span>Scroll to explore arenas</span>
             <div class="scroll-arrow"></div>
           </div>
         </div>
