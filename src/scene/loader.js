@@ -4,6 +4,13 @@ import { SPORTS } from '../sports/index.js'
 
 const gltfLoader = new GLTFLoader()
 
+// Load a single model by sport config object
+export function loadModel(sport) {
+  return new Promise((resolve, reject) => {
+    gltfLoader.load(sport.modelPath, resolve, undefined, reject)
+  })
+}
+
 // Load all 6 GLBs in parallel; calls onProgress(0–1) as they finish
 export async function loadAllModels(onProgress) {
   let loaded = 0

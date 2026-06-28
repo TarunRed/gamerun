@@ -12,88 +12,64 @@ const BG_H  = 28
 
 const texLoader = new THREE.TextureLoader()
 
-export function buildWorld(scene, gltfModels) {
-  const zones = []
+// Build a single sport zone and add it to the scene
+export function buildZone(scene, sport, gltf, index) {
+  const centerX = index * ZONE_GAP
+  const group   = new THREE.Group()
+  group.position.x = centerX
+  scene.add(group)
 
-  SPORTS.forEach((sport, i) => {
-    const centerX = i * ZONE_GAP
-    const group = new THREE.Group()
-    group.position.x = centerX
-    scene.add(group)
+  const floor     = buildFloor(sport)
+  const markings  = buildMarkings(sport, index)
+  const backdrop  = buildBackdrop(sport)
+  const particles = buildParticles(sport)
+  const dividers  = buildZoneDividers()
 
-    const floor     = buildFloor(sport)
-    const markings  = buildMarkings(sport, i)
-    const backdrop  = buildBackdrop(sport)
-    const particles = buildParticles(sport)
-    const dividers  = buildZoneDividers()  // black wings blocking adjacent zones
+  group.add(floor, markings, backdrop, dividers, particles)
 
-    group.add(floor, markings, backdrop, dividers, particles)
+  const light = createZoneLight(sport.color, new THREE.Vector3(0, 5, 1))
+  group.add(light)
 
-    // Accent point light above the player
-    const light = createZoneLight(sport.color, new THREE.Vector3(0, 5, 1))
-    group.add(light)
+  const fill = new THREE.PointLight(0xffcc66, 5, 20, 1.5)
+  fill.position.set(0, 2.0, 4.2)
+  group.add(fill)
 
-    // Warm front-fill at camera position — contrasts against cold ice/dark arenas
-    // and makes players visible regardless of jersey color
-    const fill = new THREE.PointLight(0xffcc66, 5, 20, 1.5)
-    fill.position.set(0, 2.0, 4.2)
-    group.add(fill)
+  const modelRoot = gltf.scene
+  normalizeModel(modelRoot)
+  if (sport.ballColor) recolourBall(modelRoot, sport.ballColor)
 
-    // Swap in real GLB model
-    const gltf = gltfModels[i]
-    const modelRoot = gltf.scene
-    normalizeModel(modelRoot)
-
-    // Recolour ball on softball
-    if (sport.ballColor) recolourBall(modelRoot, sport.ballColor)
-
-    modelRoot.traverse(child => {
-      if (!child.isMesh) return
-      child.castShadow = true
-      child.receiveShadow = false
-
-      const mats = Array.isArray(child.material) ? child.material : [child.material]
-      mats.forEach(m => {
-        if (!m) return
-        m.side = THREE.DoubleSide  // visible even if model faces away from camera
-        // Add a faint self-illumination so dark-textured models are always readable
-        if (m.emissive !== undefined) {
-          m.emissiveIntensity = Math.max(m.emissiveIntensity || 0, 0.25)
-          if (m.color) m.emissive.copy(m.color).multiplyScalar(0.3)
-        }
-        m.needsUpdate = true
-      })
-    })
-
-    group.add(modelRoot)
-
-    // Start the first available animation
-    let mixer = null
-    if (gltf.animations && gltf.animations.length > 0) {
-      mixer = new THREE.AnimationMixer(modelRoot)
-      const clip = gltf.animations[0]
-      const action = mixer.clipAction(clip)
-      action.play()
-    }
-
-    // Extract joint positions for stat label placement
-    // Run after first mixer update so bone world transforms are current
-    const joints = extractJoints(modelRoot)
-
-    zones.push({
-      sport,
-      group,
-      player: modelRoot,
-      particles,
-      mixer,
-      joints,
-      centerX,
-      index: i,
-      backdrop,  // exposed so main.js can cross-fade opacity
+  modelRoot.traverse(child => {
+    if (!child.isMesh) return
+    child.castShadow    = true
+    child.receiveShadow = false
+    const mats = Array.isArray(child.material) ? child.material : [child.material]
+    mats.forEach(m => {
+      if (!m) return
+      m.side = THREE.DoubleSide
+      if (m.emissive !== undefined) {
+        m.emissiveIntensity = Math.max(m.emissiveIntensity || 0, 0.25)
+        if (m.color) m.emissive.copy(m.color).multiplyScalar(0.3)
+      }
+      m.needsUpdate = true
     })
   })
 
-  return zones
+  group.add(modelRoot)
+
+  let mixer = null
+  if (gltf.animations?.length > 0) {
+    mixer = new THREE.AnimationMixer(modelRoot)
+    mixer.clipAction(gltf.animations[0]).play()
+  }
+
+  const joints = extractJoints(modelRoot)
+
+  return { sport, group, player: modelRoot, particles, mixer, joints, centerX, index, backdrop }
+}
+
+// Convenience wrapper — loads all zones at once (used by legacy callers)
+export function buildWorld(scene, gltfModels) {
+  return SPORTS.map((sport, i) => buildZone(scene, sport, gltfModels[i], i))
 }
 
 // ─── Environment pieces ───────────────────────────────────────────────────────

@@ -8,7 +8,7 @@ export const SPORTS = [
     floorColor: 0x1a0e06,
     fogColor: 0x100800,
     modelPath: '/models/basketball.glb',
-    bgPath: '/backgrounds/basketball.jpg',
+    bgPath: '/backgrounds/basketball.webp',
     ballColor: null,  // keep original colors
     stats: [
       { name: 'Sprint Speed',  value: '18.4', unit: 'mph', joint: 'foot' },
@@ -27,7 +27,7 @@ export const SPORTS = [
     floorColor: 0x060d12,
     fogColor: 0x001520,
     modelPath: '/models/hockey.glb',
-    bgPath: '/backgrounds/hockey.jpg',
+    bgPath: '/backgrounds/hockey.webp',
     ballColor: null,
     stats: [
       { name: 'Skating Speed', value: '23.2', unit: 'mph', joint: 'foot' },
@@ -46,7 +46,7 @@ export const SPORTS = [
     floorColor: 0x041006,
     fogColor: 0x011004,
     modelPath: '/models/soccer.glb',
-    bgPath: '/backgrounds/soccer.jpg',
+    bgPath: '/backgrounds/soccer.webp',
     ballColor: null,
     stats: [
       { name: 'Sprint Speed',   value: '21.6', unit: 'mph', joint: 'foot' },
@@ -65,7 +65,7 @@ export const SPORTS = [
     floorColor: 0x100b02,
     fogColor: 0x120d00,
     modelPath: '/models/baseball.glb',
-    bgPath: '/backgrounds/baseball.jpg',
+    bgPath: '/backgrounds/baseball.webp',
     ballColor: null,  // white baseball — original
     stats: [
       { name: 'Pitch Speed',   value: '94',   unit: 'mph', joint: 'hand' },
@@ -103,7 +103,7 @@ export const SPORTS = [
     floorColor: 0x100502,
     fogColor: 0x0e0400,
     modelPath: '/models/softball.glb',   // same GLB as baseball
-    bgPath: '/backgrounds/baseball.jpg', // same stadium
+    bgPath: '/backgrounds/baseball.webp', // same stadium
     ballColor: '#c8e600',                // yellow-green softball
     stats: [
       { name: 'Pitch Speed',   value: '72',  unit: 'mph', joint: 'hand' },

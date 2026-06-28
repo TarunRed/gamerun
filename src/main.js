@@ -7,9 +7,9 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 
 import { SPORTS } from './sports/index.js'
 import { createLighting } from './scene/lighting.js'
-import { buildWorld } from './scene/world.js'
+import { buildZone } from './scene/world.js'
 import { buildCameraPath, updateCamera, progressToZoneIndex } from './scene/camera.js'
-import { loadAllModels } from './scene/loader.js'
+import { loadModel } from './scene/loader.js'
 import { createScrollDriver } from './scroll/driver.js'
 import { initNav, setActiveNavItem } from './ui/nav.js'
 import { animateHeroIn } from './ui/hero.js'
@@ -20,12 +20,12 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 // ─── Renderer ────────────────────────────────────────────────────────────────
 
 const canvas = document.getElementById('webgl')
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))  // cap at 1.5 — saves ~44% GPU pixels vs 2x
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.outputColorSpace = THREE.SRGBColorSpace
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 2.2  // brighter scene so characters and court read clearly
+renderer.toneMappingExposure = 2.2
 
 const labelRenderer = new CSS2DRenderer({ element: document.getElementById('labels-root') })
 labelRenderer.setSize(window.innerWidth, window.innerHeight)
@@ -38,165 +38,175 @@ scene.fog = new THREE.FogExp2(0x06070a, 0.014)
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500)
 
-// ─── Camera path (built once, doesn't need models) ───────────────────────────
-
 const { posSpline, lookSpline } = buildCameraPath()
 
-// ─── Loader UI ───────────────────────────────────────────────────────────────
+// ─── Loader bar ───────────────────────────────────────────────────────────────
 
-const fill      = document.querySelector('.loader-fill')
-const loaderTxt = document.querySelector('.loader-text')
+const loaderFill = document.querySelector('.loader-fill')
+const loaderTxt  = document.querySelector('.loader-text')
 
 function setLoadProgress(pct) {
-  fill.style.width = Math.round(pct * 100) + '%'
-  loaderTxt.textContent = pct < 1
-    ? `Loading athletes... ${Math.round(pct * 100)}%`
-    : 'Ready'
+  loaderFill.style.width = Math.round(pct * 100) + '%'
+  loaderTxt.textContent  = pct < 1 ? `Loading athletes... ${Math.round(pct * 100)}%` : 'Ready'
 }
 
-// ─── Bootstrap: load all models, then build world ────────────────────────────
+// ─── Zone registry — sparse array, zones arrive progressively ─────────────────
+
+const zones       = new Array(SPORTS.length).fill(null)
+const allLabels   = new Array(SPORTS.length).fill(null)
+const allConnectors = new Array(SPORTS.length).fill(null)
+
+function registerZone(gltf, index) {
+  const zone = buildZone(scene, SPORTS[index], gltf, index)
+  zone.mixer?.update(0.016)   // prime bone world matrices for joint extraction
+  zones[index]        = zone
+  allLabels[index]    = createStatLabels(zone)
+  allConnectors[index] = createConnectors(zone, allLabels[index])
+}
+
+// ─── Progressive init ─────────────────────────────────────────────────────────
 
 async function init() {
   createLighting(scene)
 
-  // Load all 6 GLBs; loader bar reflects real progress
-  const models = await loadAllModels(setLoadProgress)
+  // ── Phase 1: load basketball only — get user into the scene fast ──────────
+  setLoadProgress(0.05)
+  const firstModel = await loadModel(SPORTS[0])
+  registerZone(firstModel, 0)
+  setLoadProgress(1 / SPORTS.length)
 
-  const zones = buildWorld(scene, models)
-
-  // One tick so bone world matrices are populated before joint extraction
-  zones.forEach(z => z.mixer?.update(0.016))
-
-  // ─── Stat labels & connectors ───────────────────────────────────────────
-  const allLabels     = zones.map(z => createStatLabels(z))
-  const allConnectors = zones.map((z, i) => createConnectors(z, allLabels[i]))
-
-  // ─── Scroll driver ───────────────────────────────────────────────────────
-  const scrollState = createScrollDriver()
-
-  // ─── Nav ─────────────────────────────────────────────────────────────────
-  initNav()
-
-  // ─── Dismiss loader & start hero ─────────────────────────────────────────
-  // Dismiss loader immediately — no extra delay
-  gsap.to('#loader', {
+  // Dismiss loader and start immediately
+  const loader = document.getElementById('loader')
+  gsap.to(loader, {
     opacity: 0, duration: 0.5, ease: 'power2.inOut',
-    onComplete: () => { document.getElementById('loader').style.display = 'none' },
+    onComplete: () => { loader.style.display = 'none' },
   })
   animateHeroIn()
 
-  // ─── Zone state ──────────────────────────────────────────────────────────
-  let activeZoneIndex = -1
+  const scrollState = createScrollDriver()
+  initNav()
+  tick(scrollState)
 
-  function showZoneLabels(idx) {
-    allLabels[idx].forEach(({ el }, i) => {
-      gsap.to(el, { opacity: 1, duration: 0.4, delay: i * 0.08, ease: 'power2.out' })
-    })
-    allConnectors[idx].forEach(({ mat }, i) => {
-      gsap.to(mat, { opacity: 0.5, duration: 0.4, delay: i * 0.08 })
-    })
-  }
-
-  function hideZoneLabels(idx) {
-    // Instant kill — no fade so dead-zone labels never bleed into the next sport
-    allLabels[idx].forEach(({ el }) => gsap.set(el, { opacity: 0 }))
-    allConnectors[idx].forEach(({ mat }) => { mat.opacity = 0 })
-  }
-
-  // ─── Fog interpolation ───────────────────────────────────────────────────
-  const _fogA = new THREE.Color()
-  const _fogB = new THREE.Color()
-
-  function updateFog(t) {
-    const frac = t * SPORTS.length
-    const a = Math.min(Math.floor(frac), SPORTS.length - 1)
-    const b = Math.min(a + 1, SPORTS.length - 1)
-    _fogA.set(SPORTS[a].fogColor)
-    _fogB.set(SPORTS[b].fogColor)
-    scene.fog.color.lerpColors(_fogA, _fogB, frac - a)
-    renderer.setClearColor(scene.fog.color)
-  }
-
-  // ─── Particle drift ──────────────────────────────────────────────────────
-  function animateParticles(zone, t) {
-    const pos = zone.particles.geometry.attributes.position
-    for (let i = 0; i < pos.count; i++) {
-      pos.setY(i, pos.getY(i) + Math.sin(t * 0.4 + i * 0.3) * 0.001)
-    }
-    pos.needsUpdate = true
-  }
-
-  // ─── Render loop ─────────────────────────────────────────────────────────
-  const clock = new THREE.Clock()
-
-  function tick() {
-    requestAnimationFrame(tick)
-
-    const delta   = clock.getDelta()
-    const elapsed = clock.elapsedTime
-    const t       = scrollState.progress
-
-    // Advance all animation mixers
-    zones.forEach(z => z.mixer?.update(delta))
-
-    // Drift particles
-    zones.forEach(z => animateParticles(z, elapsed))
-
-    // Camera along spline
-    updateCamera(camera, posSpline, lookSpline, t)
-
-    // Zone activation
-    const zoneProgress = t * SPORTS.length
-    const inZone       = zoneProgress > 0.15 && zoneProgress < SPORTS.length - 0.15
-    const currentZone  = progressToZoneIndex(t)
-
-    if (inZone && currentZone !== activeZoneIndex) {
-      if (activeZoneIndex >= 0) hideZoneLabels(activeZoneIndex)
-      activeZoneIndex = currentZone
-      showZoneLabels(currentZone)
-      updateSportOverlay(currentZone)
-      setActiveNavItem(currentZone)
-    } else if (!inZone && activeZoneIndex >= 0) {
-      hideZoneLabels(activeZoneIndex)
-      hideSportOverlay()
-      activeZoneIndex = -1
-    }
-
-    if (inZone) updateFog(t)
-
-    // Cross-fade backdrop opacity: full at zone center, fades between zones
-    // Zone k center lands at scroll progress (k+1)/7, so in t*7 space it is at k+1
-    const zt = t * 7
-    zones.forEach((zone, i) => {
-      const dist = Math.abs(zt - (i + 1))  // 0 at center, 1 = one full zone away
-      const opacity = Math.max(0, 1 - Math.max(0, dist - 0.45) / 0.55)
-      zone.backdrop.material.opacity = opacity
-    })
-
-    renderer.render(scene, camera)
-    labelRenderer.render(scene, camera)
-  }
-
-  tick()
+  // ── Phase 2: load remaining 5 in parallel, silently in background ─────────
+  let loaded = 1
+  await Promise.all(
+    SPORTS.slice(1).map((sport, idx) =>
+      loadModel(sport).then(gltf => {
+        loaded++
+        registerZone(gltf, idx + 1)
+      })
+    )
+  )
 }
 
-init().catch(err => {
-  console.error('GameRun init failed:', err)
-  loaderTxt.textContent = 'Failed to load — check console'
-})
+// ─── Render loop ──────────────────────────────────────────────────────────────
 
-// ─── Stat labels ─────────────────────────────────────────────────────────────
+function tick(scrollState) {
+  requestAnimationFrame(() => tick(scrollState))
+
+  const delta   = clock.getDelta()
+  const elapsed = clock.getElapsedTime()
+  const t       = scrollState.progress
+
+  // Camera along spline
+  updateCamera(camera, posSpline, lookSpline, t)
+
+  // Zone-centered coordinate: zone k center lands at zt = k+1
+  const zt          = t * 7
+  const inZone      = zt > 0.15 && zt < SPORTS.length + 0.85
+  const currentZone = progressToZoneIndex(t)
+
+  zones.forEach((zone, i) => {
+    if (!zone) return
+
+    const dist = Math.abs(zt - (i + 1))
+
+    // Only animate mixers within 1.5 zones of camera (skip 3-4 distant zones)
+    if (dist < 1.5) zone.mixer?.update(delta)
+
+    // Particle drift only for the active zone
+    if (dist < 0.8) animateParticles(zone, elapsed)
+
+    // Cross-fade backdrop: full at center, gone by the time adjacent zone center is reached
+    zone.backdrop.material.opacity = Math.max(0, 1 - Math.max(0, dist - 0.45) / 0.55)
+  })
+
+  // Zone label activation
+  if (inZone && currentZone !== activeZoneIndex) {
+    if (activeZoneIndex >= 0) hideZoneLabels(activeZoneIndex)
+    activeZoneIndex = currentZone
+    showZoneLabels(currentZone)
+    updateSportOverlay(currentZone)
+    setActiveNavItem(currentZone)
+  } else if (!inZone && activeZoneIndex >= 0) {
+    hideZoneLabels(activeZoneIndex)
+    hideSportOverlay()
+    activeZoneIndex = -1
+  }
+
+  if (inZone) updateFog(t)
+
+  renderer.render(scene, camera)
+  labelRenderer.render(scene, camera)
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+const clock = new THREE.Clock()
+let activeZoneIndex = -1
+
+// ─── Label helpers ────────────────────────────────────────────────────────────
+
+function showZoneLabels(idx) {
+  if (!allLabels[idx]) return
+  allLabels[idx].forEach(({ el }, i) => {
+    gsap.to(el, { opacity: 1, duration: 0.4, delay: i * 0.08, ease: 'power2.out' })
+  })
+  allConnectors[idx]?.forEach(({ mat }, i) => {
+    gsap.to(mat, { opacity: 0.5, duration: 0.4, delay: i * 0.08 })
+  })
+}
+
+function hideZoneLabels(idx) {
+  if (!allLabels[idx]) return
+  allLabels[idx].forEach(({ el }) => gsap.set(el, { opacity: 0 }))
+  allConnectors[idx]?.forEach(({ mat }) => { mat.opacity = 0 })
+}
+
+// ─── Fog interpolation ────────────────────────────────────────────────────────
+
+const _fogA = new THREE.Color()
+const _fogB = new THREE.Color()
+
+function updateFog(t) {
+  const frac = t * SPORTS.length
+  const a = Math.min(Math.floor(frac), SPORTS.length - 1)
+  const b = Math.min(a + 1, SPORTS.length - 1)
+  _fogA.set(SPORTS[a].fogColor)
+  _fogB.set(SPORTS[b].fogColor)
+  scene.fog.color.lerpColors(_fogA, _fogB, frac - a)
+  renderer.setClearColor(scene.fog.color)
+}
+
+// ─── Particle drift ───────────────────────────────────────────────────────────
+
+function animateParticles(zone, t) {
+  const pos = zone.particles.geometry.attributes.position
+  for (let i = 0; i < pos.count; i++) {
+    pos.setY(i, pos.getY(i) + Math.sin(t * 0.4 + i * 0.3) * 0.001)
+  }
+  pos.needsUpdate = true
+}
+
+// ─── Stat labels ──────────────────────────────────────────────────────────────
+
+const SPREADS = [
+  { x: -2.4, z: -1.2 }, { x: 2.6, z: 0.8 },
+  { x: -2.0, z:  1.4 }, { x: 1.8, z: -1.5 },
+  { x: -1.2, z:  0.4 },
+]
 
 function createStatLabels(zone) {
-  // Fixed spread offsets so labels don't randomise on reload
-  const spreads = [
-    { x: -2.4, z: -1.2 },
-    { x:  2.6, z:  0.8 },
-    { x: -2.0, z:  1.4 },
-    { x:  1.8, z: -1.5 },
-    { x: -1.2, z:  0.4 },
-  ]
-
   return zone.sport.stats.map((stat, i) => {
     const el = document.createElement('div')
     el.className = 'stat-label'
@@ -206,18 +216,12 @@ function createStatLabels(zone) {
         <div class="stat-card-value">${stat.value}<span class="stat-card-unit">${stat.unit}</span></div>
       </div>`
 
-    const obj = new CSS2DObject(el)
+    const obj   = new CSS2DObject(el)
     const joint = zone.joints[stat.joint] || new THREE.Vector3(0, 1, 0)
-    const sp    = spreads[i] || { x: 0, z: 0 }
+    const sp    = SPREADS[i] || { x: 0, z: 0 }
 
-    // Position in world space (zone group is at centerX, so joint is already world-space)
-    obj.position.set(
-      joint.x + sp.x,
-      joint.y + 0.1,
-      joint.z + sp.z
-    )
+    obj.position.set(joint.x + sp.x, joint.y + 0.1, joint.z + sp.z)
     zone.group.add(obj)
-
     return { obj, el, stat }
   })
 }
@@ -226,21 +230,10 @@ function createConnectors(zone, labels) {
   return zone.sport.stats.map((stat, i) => {
     const joint = zone.joints[stat.joint] || new THREE.Vector3(0, 1, 0)
     const label = labels[i].obj
-
-    // Start and end in group-local space
-    const start = joint.clone()
-    const end   = label.position.clone()
-
-    const geo = new THREE.BufferGeometry().setFromPoints([start, end])
-    const mat = new THREE.LineBasicMaterial({
-      color: zone.sport.color,
-      transparent: true,
-      opacity: 0,
-    })
-    const mesh = new THREE.Line(geo, mat)
-    zone.group.add(mesh)
-
-    return { mesh, mat, geo, start, end }
+    const geo   = new THREE.BufferGeometry().setFromPoints([joint.clone(), label.position.clone()])
+    const mat   = new THREE.LineBasicMaterial({ color: zone.sport.color, transparent: true, opacity: 0 })
+    zone.group.add(new THREE.Line(geo, mat))
+    return { mat }
   })
 }
 
@@ -251,6 +244,13 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
   labelRenderer.setSize(window.innerWidth, window.innerHeight)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
   ScrollTrigger.refresh()
+})
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+
+init().catch(err => {
+  console.error('GameRun init failed:', err)
+  loaderTxt.textContent = 'Failed to load — check console'
 })
