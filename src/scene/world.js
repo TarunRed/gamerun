@@ -5,9 +5,14 @@ import { normalizeModel, recolourBall, extractJoints } from './loader.js'
 
 export const ZONE_GAP = 60
 
-// Backdrop sits behind the action; camera is at Z≈6.5–8.5 looking at Z=0
+// Backdrop geometry constants
+// Camera eye: Y=1.0 Z=4.5–6.5  |  LookAt: Y=1.4 Z=0
+// The center ray hits the backdrop (Z=-13) at Y≈2.5.  Half-FOV=30° at max
+// distance 19.5 → visible Y = 2.2 ± 11.3 → need coverage from Y≈-9 to +14.
+// BG_H=28 centred at Y=2.5 → bottom=-11.5, top=+16.5 — full coverage with margin.
+// BG_W=52 > 2*tan(30°)*19.5*1.78(max aspect) ≈ 40 → safe for all viewports.
 const BG_Z  = -13
-const BG_W  = 44   // calibrated to exact camera view width — no adjacent zone bleed
+const BG_W  = 52
 const BG_H  = 28
 
 const texLoader = new THREE.TextureLoader()
@@ -96,8 +101,9 @@ function buildBackdrop(sport) {
     opacity: 1,
   })
   const mesh = new THREE.Mesh(geo, mat)
-  // Moved 1.5 units lower so arena background fills more of the frame above the player
-  mesh.position.set(0, BG_H / 2 - 1.5, BG_Z)
+  // Y=2.5 = where camera centre ray intersects this plane (eye Y=1.0, Z=4.5, lookAt Y=1.4)
+  // This centres the backdrop on what the camera actually sees, filling the canvas top-to-bottom
+  mesh.position.set(0, 2.5, BG_Z)
 
   texLoader.load(sport.bgPath, tex => {
     tex.colorSpace  = THREE.SRGBColorSpace
@@ -145,19 +151,19 @@ function buildZoneDividers() {
     side: THREE.DoubleSide,
   })
 
-  // Each wall is tall and deep enough to cover backdrop-to-camera range
-  const geo = new THREE.PlaneGeometry(22, 50)  // depth(22) × height(50); Z range = -18 to +4
+  // Wings: tall enough to cover backdrop Y range (-12 to +17) and full Z depth
+  const geo = new THREE.PlaneGeometry(32, 60)  // 32 deep (Z -18 to +14), 60 tall
   const group = new THREE.Group()
 
   const half = ZONE_GAP / 2
 
   const left = new THREE.Mesh(geo, mat)
   left.rotation.y  = Math.PI / 2
-  left.position.set(-half, 10, -7)
+  left.position.set(-half, 3, -4)   // centred at Y=3 to cover new backdrop range
   group.add(left)
 
   const right = left.clone()
-  right.position.set(half, 10, -7)
+  right.position.set(half, 3, -4)
   group.add(right)
 
   return group

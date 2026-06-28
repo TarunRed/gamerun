@@ -324,6 +324,37 @@ body {
   opacity: 0;
 }
 
+/* ─── Joint dot — glowing indicator at each body part (ai.io style) ─── */
+.joint-dot {
+  --dot-color: #00f0ff;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot-color);
+  box-shadow: 0 0 10px var(--dot-color), 0 0 22px var(--dot-color);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  position: relative;
+  z-index: 3;
+}
+
+.joint-dot::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid var(--dot-color);
+  opacity: 0.6;
+  animation: dot-ring 1.8s ease-out infinite;
+}
+
+@keyframes dot-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(3); opacity: 0;   }
+}
+
 .stat-card {
   background: rgba(6, 7, 10, 0.78);
   border: 1px solid rgba(0, 240, 255, 0.25);

@@ -169,17 +169,21 @@ let activeZoneIndex = -1
 
 function showZoneLabels(idx) {
   if (!allLabels[idx]) return
-  allLabels[idx].forEach(({ el }, i) => {
-    gsap.to(el, { opacity: 1, duration: 0.4, delay: i * 0.08, ease: 'power2.out' })
+  allLabels[idx].forEach(({ el, dotEl }, i) => {
+    gsap.to(el,    { opacity: 1, duration: 0.4, delay: i * 0.09, ease: 'power2.out' })
+    gsap.to(dotEl, { opacity: 1, duration: 0.3, delay: i * 0.07, ease: 'power2.out' })
   })
   allConnectors[idx]?.forEach(({ mat }, i) => {
-    gsap.to(mat, { opacity: 0.5, duration: 0.4, delay: i * 0.08 })
+    gsap.to(mat, { opacity: 0.55, duration: 0.4, delay: i * 0.09 })
   })
 }
 
 function hideZoneLabels(idx) {
   if (!allLabels[idx]) return
-  allLabels[idx].forEach(({ el }) => gsap.set(el, { opacity: 0 }))
+  allLabels[idx].forEach(({ el, dotEl }) => {
+    gsap.set(el,    { opacity: 0 })
+    gsap.set(dotEl, { opacity: 0 })
+  })
   allConnectors[idx]?.forEach(({ mat }) => { mat.opacity = 0 })
 }
 
@@ -217,7 +221,13 @@ const SPREADS = [
 ]
 
 function createStatLabels(zone) {
+  const accent = zone.sport.accentHex
+
   return zone.sport.stats.map((stat, i) => {
+    const joint = zone.joints[stat.joint] || new THREE.Vector3(0, 1, 0)
+    const sp    = SPREADS[i] || { x: 0, z: 0 }
+
+    // ── Stat card label ──────────────────────────────────────────────────────
     const el = document.createElement('div')
     el.className = 'stat-label'
     el.innerHTML = `
@@ -226,13 +236,19 @@ function createStatLabels(zone) {
         <div class="stat-card-value">${stat.value}<span class="stat-card-unit">${stat.unit}</span></div>
       </div>`
 
-    const obj   = new CSS2DObject(el)
-    const joint = zone.joints[stat.joint] || new THREE.Vector3(0, 1, 0)
-    const sp    = SPREADS[i] || { x: 0, z: 0 }
-
+    const obj = new CSS2DObject(el)
     obj.position.set(joint.x + sp.x, joint.y + 0.1, joint.z + sp.z)
     zone.group.add(obj)
-    return { obj, el, stat }
+
+    // ── Joint dot — glowing indicator at the body part (ai.io style) ────────
+    const dotEl = document.createElement('div')
+    dotEl.className = 'joint-dot'
+    dotEl.style.setProperty('--dot-color', accent)
+    const dotObj = new CSS2DObject(dotEl)
+    dotObj.position.copy(joint)
+    zone.group.add(dotObj)
+
+    return { obj, el, stat, dotObj, dotEl }
   })
 }
 
