@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameRun — AI Sports Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Loading screen -->
+    <div id="loader">
+      <div class="loader-inner">
+        <img class="loader-logo-img" src="/gamerun-logo.png" alt="GameRun" />
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+        <div class="loader-text">Loading arenas...</div>
+      </div>
+    </div>
+
+    <!-- Fixed nav — logo left | sport pills center | CTA right -->
+    <nav id="sport-nav">
+      <a class="nav-logo" href="https://gamerun.ai" target="_blank">
+        <img src="/gamerun-logo.png" alt="GameRun" class="nav-logo-img" />
+      </a>
+
+      <div class="nav-glass-pill">
+        <button class="sport-pill active" data-sport="0">
+          <span class="sport-pill-icon">🏀</span>
+          <span class="sport-pill-label">Basketball</span>
+        </button>
+        <button class="sport-pill" data-sport="1">
+          <span class="sport-pill-icon">🏒</span>
+          <span class="sport-pill-label">Ice Hockey</span>
+        </button>
+        <button class="sport-pill" data-sport="2">
+          <span class="sport-pill-icon">⚽</span>
+          <span class="sport-pill-label">Soccer</span>
+        </button>
+        <button class="sport-pill" data-sport="3">
+          <span class="sport-pill-icon">⚾</span>
+          <span class="sport-pill-label">Baseball</span>
+        </button>
+        <button class="sport-pill" data-sport="4">
+          <span class="sport-pill-icon">🤺</span>
+          <span class="sport-pill-label">Fencing</span>
+        </button>
+        <button class="sport-pill" data-sport="5">
+          <span class="sport-pill-icon">🥎</span>
+          <span class="sport-pill-label">Softball</span>
+        </button>
+      </div>
+
+      <a class="nav-cta" href="https://gamerun.ai" target="_blank">Try Free</a>
+    </nav>
+
+    <!-- Scroll container -->
+    <div id="scroll-container">
+      <section id="hero-section">
+        <div class="hero-content">
+          <p class="hero-eyebrow">AI-Powered Coaching Advantage</p>
+          <h1 class="hero-title">Every Rep.<br/>Every Stat.<br/>Every Edge.</h1>
+          <p class="hero-sub">Upload game footage. Get pro-level analytics in 2 minutes.<br/>Scroll to explore all 6 sports.</p>
+          <div class="hero-scroll-hint">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sport-section" data-sport="0" id="zone-basketball"></section>
+      <section class="sport-section" data-sport="1" id="zone-hockey"></section>
+      <section class="sport-section" data-sport="2" id="zone-soccer"></section>
+      <section class="sport-section" data-sport="3" id="zone-baseball"></section>
+      <section class="sport-section" data-sport="4" id="zone-fencing"></section>
+      <section class="sport-section" data-sport="5" id="zone-softball"></section>
+
+      <section id="cta-section">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Analyze Your Game?</h2>
+          <p class="cta-sub">Join coaches and athletes across the US already using GameRun AI.</p>
+          <a class="cta-btn" href="https://gamerun.ai" target="_blank">Analyze Your Game Now →</a>
+        </div>
+      </section>
+    </div>
+
+    <canvas id="webgl"></canvas>
+    <div id="labels-root"></div>
+
+    <div id="sport-overlay">
+      <div class="sport-overlay-name"></div>
+      <div class="sport-overlay-tagline"></div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
