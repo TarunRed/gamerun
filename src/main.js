@@ -87,6 +87,14 @@ async function init() {
   initNav()
   tick(scrollState)
 
+  // Fade canvas out when user scrolls past the 3D experience into marketing content
+  ScrollTrigger.create({
+    trigger: '#marketing-wrapper',
+    start: 'top 85%',
+    onEnter:     () => { gsap.to('#webgl', { opacity: 0, duration: 0.7 }); hideSportOverlay() },
+    onLeaveBack: () =>   gsap.to('#webgl', { opacity: 1, duration: 0.5 }),
+  })
+
   // ── Phase 2: load remaining 5 in parallel, silently in background ─────────
   let loaded = 1
   await Promise.all(
@@ -112,8 +120,10 @@ function tick(scrollState) {
   updateCamera(camera, posSpline, lookSpline, t)
 
   // Zone-centered coordinate: zone k center lands at zt = k+1
+  // Bounds 0.5–6.5 match exactly the first/last zone half-width so labels
+  // disappear the moment the camera exits the first or last arena
   const zt          = t * 7
-  const inZone      = zt > 0.15 && zt < SPORTS.length + 0.85
+  const inZone      = zt > 0.5 && zt < 6.5
   const currentZone = progressToZoneIndex(t)
 
   zones.forEach((zone, i) => {
@@ -247,6 +257,19 @@ window.addEventListener('resize', () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
   ScrollTrigger.refresh()
 })
+
+// ─── Marketing section scroll-reveal via IntersectionObserver ─────────────────
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view')
+      revealObserver.unobserve(entry.target)
+    }
+  })
+}, { threshold: 0.12 })
+
+document.querySelectorAll('.mkt-section').forEach(el => revealObserver.observe(el))
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 

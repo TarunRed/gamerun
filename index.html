@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GameRun — AI Sports Analytics</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
-    <!-- Preload first model — GLTFLoader uses fetch internally -->
     <link rel="preload" href="/models/basketball.glb" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
+
     <!-- Loading screen -->
     <div id="loader">
       <div class="loader-inner">
@@ -20,51 +21,31 @@
       </div>
     </div>
 
-    <!-- Fixed nav — logo left | sport pills center | CTA right -->
+    <!-- Fixed nav -->
     <nav id="sport-nav">
       <a class="nav-logo" href="https://gamerun.ai" target="_blank">
         <img src="/gamerun-logo.png" alt="GameRun" class="nav-logo-img" />
       </a>
-
       <div class="nav-glass-pill">
-        <button class="sport-pill active" data-sport="0">
-          <span class="sport-pill-icon">🏀</span>
-          <span class="sport-pill-label">Basketball</span>
-        </button>
-        <button class="sport-pill" data-sport="1">
-          <span class="sport-pill-icon">🏒</span>
-          <span class="sport-pill-label">Ice Hockey</span>
-        </button>
-        <button class="sport-pill" data-sport="2">
-          <span class="sport-pill-icon">⚽</span>
-          <span class="sport-pill-label">Soccer</span>
-        </button>
-        <button class="sport-pill" data-sport="3">
-          <span class="sport-pill-icon">⚾</span>
-          <span class="sport-pill-label">Baseball</span>
-        </button>
-        <button class="sport-pill" data-sport="4">
-          <span class="sport-pill-icon">🤺</span>
-          <span class="sport-pill-label">Fencing</span>
-        </button>
-        <button class="sport-pill" data-sport="5">
-          <span class="sport-pill-icon">🥎</span>
-          <span class="sport-pill-label">Softball</span>
-        </button>
+        <button class="sport-pill active" data-sport="0"><span class="sport-pill-icon">🏀</span><span class="sport-pill-label">Basketball</span></button>
+        <button class="sport-pill" data-sport="1"><span class="sport-pill-icon">🏒</span><span class="sport-pill-label">Ice Hockey</span></button>
+        <button class="sport-pill" data-sport="2"><span class="sport-pill-icon">⚽</span><span class="sport-pill-label">Soccer</span></button>
+        <button class="sport-pill" data-sport="3"><span class="sport-pill-icon">⚾</span><span class="sport-pill-label">Baseball</span></button>
+        <button class="sport-pill" data-sport="4"><span class="sport-pill-icon">🤺</span><span class="sport-pill-label">Fencing</span></button>
+        <button class="sport-pill" data-sport="5"><span class="sport-pill-icon">🥎</span><span class="sport-pill-label">Softball</span></button>
       </div>
-
       <a class="nav-cta" href="https://gamerun.ai" target="_blank">Try Free</a>
     </nav>
 
-    <!-- Scroll container -->
+    <!-- ═══ 3D SCROLL EXPERIENCE ════════════════════════════════════════════ -->
     <div id="scroll-container">
       <section id="hero-section">
         <div class="hero-content">
           <p class="hero-eyebrow">AI-Powered Coaching Advantage</p>
-          <h1 class="hero-title">Every Rep.<br/>Every Stat.<br/>Every Edge.</h1>
-          <p class="hero-sub">Upload game footage. Get pro-level analytics in 2 minutes.<br/>Scroll to explore all 6 sports.</p>
+          <h1 class="hero-title">Turn Every<br/>Game Video<br/>Into an Edge.</h1>
+          <p class="hero-sub">Upload game film. Get a pro-level performance report with<br/>exactly what to train and how to fix it — in under 2 minutes.</p>
           <div class="hero-scroll-hint">
-            <span>Scroll to explore</span>
+            <span>Scroll to explore 6 sports</span>
             <div class="scroll-arrow"></div>
           </div>
         </div>
@@ -79,12 +60,239 @@
 
       <section id="cta-section">
         <div class="cta-content">
-          <h2 class="cta-title">Ready to Analyze Your Game?</h2>
+          <h2 class="cta-title">Ready to Analyze<br/>Your Game?</h2>
           <p class="cta-sub">Join coaches and athletes across the US already using GameRun AI.</p>
           <a class="cta-btn" href="https://gamerun.ai" target="_blank">Analyze Your Game Now →</a>
         </div>
       </section>
     </div>
+
+    <!-- ═══ MARKETING CONTENT (below 3D experience) ══════════════════════════ -->
+    <div id="marketing-wrapper">
+
+      <!-- How It Works -->
+      <section class="mkt-section" id="how-it-works">
+        <div class="mkt-inner">
+          <p class="mkt-eyebrow">How It Works</p>
+          <h2 class="mkt-title">Three Steps to<br/>Pro-Level Insight</h2>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-num">01</div>
+              <div class="step-icon">📹</div>
+              <h3 class="step-title">Upload Video</h3>
+              <p class="step-body">Record on your phone or any camera and upload a highlight, practice clip, or single play.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">02</div>
+              <div class="step-icon">🤖</div>
+              <h3 class="step-title">Get Your Report</h3>
+              <p class="step-body">AI breaks down the game into a coach-ready report with drills and performance scores within 2 minutes.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">03</div>
+              <div class="step-icon">🏆</div>
+              <h3 class="step-title">Train with Drills</h3>
+              <p class="step-body">Start improving with sport-specific drills, clear reps, and targeted goals built from your actual footage.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Benefits -->
+      <section class="mkt-section mkt-section--alt" id="features-section">
+        <div class="mkt-inner">
+          <p class="mkt-eyebrow">The GameRun Advantage</p>
+          <h2 class="mkt-title">Everything Coaches<br/>and Athletes Need</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h3>AI Video Analysis</h3>
+              <p>Automatically breaks down how athletes move, react, and make decisions from raw game footage.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Coach-Ready Reports</h3>
+              <p>Translates raw data into clear coaching direction — no spreadsheets, no hours of manual review.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>2-Minute Turnaround</h3>
+              <p>Get a full performance breakdown faster than a half-time break. Upload, wait 2 min, coach better.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🏋️</div>
+              <h3>Custom Drill Plans</h3>
+              <p>AI deploys sport-specific drills for each player based on what the film actually shows.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔍</div>
+              <h3>Positional Intelligence</h3>
+              <p>Evaluates game decisions and positional impact across all 6 supported sports with sport-specific metrics.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⏱️</div>
+              <h3>Save Coaching Hours</h3>
+              <p>Shift time from film review to actual coaching. Filter and focus on players who need attention most.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Expert Coaches -->
+      <section class="mkt-section" id="coaches-section">
+        <div class="mkt-inner">
+          <p class="mkt-eyebrow">Expert Coaches & Trainers</p>
+          <h2 class="mkt-title">Trusted by the Best<br/>in the Game</h2>
+          <div class="coaches-grid">
+            <div class="coach-card">
+              <div class="coach-initials">RR</div>
+              <div class="coach-info">
+                <div class="coach-name">Ray Reid</div>
+                <div class="coach-title">Former UCONN Head Coach · Four-Time NSCAA Coach of the Year</div>
+              </div>
+            </div>
+            <div class="coach-card">
+              <div class="coach-initials">AL</div>
+              <div class="coach-info">
+                <div class="coach-name">Angel Lugo</div>
+                <div class="coach-title">Former Pro Baseball Player · Minnesota Twins, Marlins, Blue Jays</div>
+              </div>
+            </div>
+            <div class="coach-card">
+              <div class="coach-initials">MA</div>
+              <div class="coach-info">
+                <div class="coach-name">Michael Aufrichtig</div>
+                <div class="coach-title">Head Coach Columbia Fencing · USA Olympic Coach</div>
+              </div>
+            </div>
+            <div class="coach-card">
+              <div class="coach-initials">RK</div>
+              <div class="coach-info">
+                <div class="coach-name">Ryan Klesko</div>
+                <div class="coach-title">MLB All-Star · World Series Champion · Power Hitter</div>
+              </div>
+            </div>
+            <div class="coach-card">
+              <div class="coach-initials">JR</div>
+              <div class="coach-info">
+                <div class="coach-name">John Rodriguez</div>
+                <div class="coach-title">Former MLB Player · St. Louis Cardinals · 2006 World Series Champion</div>
+              </div>
+            </div>
+            <div class="coach-card">
+              <div class="coach-initials">BG</div>
+              <div class="coach-info">
+                <div class="coach-name">Brent Gough</div>
+                <div class="coach-title">Owner, West Coast Elite Hockey</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="mkt-section mkt-section--alt" id="testimonials-section">
+        <div class="mkt-inner">
+          <p class="mkt-eyebrow">What Coaches Are Saying</p>
+          <h2 class="mkt-title">Real Results,<br/>Real Coaches</h2>
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <div class="testimonial-quote">"We've used a lot of video tools before, but GameRun is the first one that actually translates data into coaching. It saves hours and gives our staff more time to focus on player development."</div>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">CB</div>
+                <div>
+                  <div class="testimonial-name">Chris Bennett</div>
+                  <div class="testimonial-role">Head Baseball Coach</div>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <div class="testimonial-quote">"Our players were immediately more engaged once they started seeing their own performance broken down visually. It made feedback more real and easier to understand."</div>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">LJ</div>
+                <div>
+                  <div class="testimonial-name">Laura Jenkins</div>
+                  <div class="testimonial-role">Youth Academy Coach</div>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <div class="testimonial-quote">"It was incredibly easy to use and provided detailed feedback instantly. For players who don't always get enough coaching attention, this is a game-changer."</div>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">SM</div>
+                <div>
+                  <div class="testimonial-name">Sarah Mitchell</div>
+                  <div class="testimonial-role">Parent of Youth Athlete</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Partners marquee -->
+      <section class="mkt-section" id="partners-section">
+        <div class="mkt-inner">
+          <p class="mkt-eyebrow">Trusted Partners</p>
+          <h2 class="mkt-title">30+ Organizations<br/>Already Using GameRun</h2>
+          <div class="partners-marquee-wrap">
+            <div class="partners-marquee">
+              <span>Duke University</span><span>GameDay USA</span><span>Pittsburgh Football Club</span>
+              <span>Elite Soccer Academy</span><span>PS2 Athletics Group</span><span>Junior Bruins Hockey</span>
+              <span>West Coast Elite Hockey</span><span>Oklahoma Warriors</span><span>413 ATC</span>
+              <span>TM Field House</span><span>Pell's Keeper School</span><span>Moran Sports</span>
+              <span>United GK Alliance</span><span>World Baseball</span><span>TruGo 16 Athletics</span>
+              <!-- duplicate for seamless loop -->
+              <span>Duke University</span><span>GameDay USA</span><span>Pittsburgh Football Club</span>
+              <span>Elite Soccer Academy</span><span>PS2 Athletics Group</span><span>Junior Bruins Hockey</span>
+              <span>West Coast Elite Hockey</span><span>Oklahoma Warriors</span><span>413 ATC</span>
+              <span>TM Field House</span><span>Pell's Keeper School</span><span>Moran Sports</span>
+              <span>United GK Alliance</span><span>World Baseball</span><span>TruGo 16 Athletics</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="mkt-section mkt-section--cta" id="final-cta">
+        <div class="mkt-inner final-cta-inner">
+          <h2 class="final-cta-title">Start Improving Your<br/>Game Today</h2>
+          <p class="final-cta-sub">Get a clear breakdown of your game with a coach-ready performance report — including what to train, how to train, and where to improve next.</p>
+          <div class="final-cta-btns">
+            <a class="cta-btn" href="https://gamerun.ai" target="_blank">Analyze Your Game Now →</a>
+            <a class="cta-btn-ghost" href="https://gamerun.ai" target="_blank">View Plans</a>
+          </div>
+          <div class="sports-supported">
+            <span>🏀 Basketball</span>
+            <span>🏒 Ice Hockey</span>
+            <span>⚽ Soccer</span>
+            <span>⚾ Baseball</span>
+            <span>🤺 Fencing</span>
+            <span>🥎 Softball</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="site-footer">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <img src="/gamerun-logo.png" alt="GameRun" class="footer-logo" />
+            <p class="footer-tagline">AI-Powered Coaching Advantage</p>
+          </div>
+          <div class="footer-links">
+            <a href="https://gamerun.ai" target="_blank">For Athletes & Parents</a>
+            <a href="https://gamerun.ai" target="_blank">For Coaches & Organizations</a>
+            <a href="https://gamerun.ai" target="_blank">About Us</a>
+            <a href="https://gamerun.ai" target="_blank">Get Started</a>
+          </div>
+          <div class="footer-bottom">
+            <span>© 2025 GameRun AI. All rights reserved.</span>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- /marketing-wrapper -->
 
     <canvas id="webgl"></canvas>
     <div id="labels-root"></div>
