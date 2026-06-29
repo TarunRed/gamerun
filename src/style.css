@@ -68,13 +68,12 @@ body.app-ready #labels-root {
 
 .hero-eyebrow {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 1.2rem;
-  opacity: 0;
 }
 
 .hero-title {
@@ -84,22 +83,31 @@ body.app-ready #labels-root {
   line-height: 1.06;
   letter-spacing: -0.025em;
   color: #fff;
-  opacity: 0;
-  transform: translateY(40px);
+}
+
+/* Each line is a masked clip — .line-i slides up from below on reveal */
+.hero-title .line {
+  overflow: hidden;
+  display: block;
+  line-height: 1.12;
+  padding-bottom: 0.04em;
+}
+
+.hero-title .line-i {
+  display: block;
+  will-change: transform;
 }
 
 .hero-sub {
   margin-top: 1.4rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.75;
   color: var(--muted);
   max-width: 440px;
-  opacity: 0;
 }
 
 .hero-actions {
-  margin-top: 2rem;
-  opacity: 0;
+  margin-top: 1.8rem;
 }
 
 .hero-cta {
@@ -128,8 +136,7 @@ body.app-ready #labels-root {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 2.5rem;
-  opacity: 0;
+  margin-top: 2.2rem;
 }
 
 .hero-metric {
@@ -163,12 +170,11 @@ body.app-ready #labels-root {
 }
 
 .hero-scroll-hint {
-  margin-top: 3rem;
+  margin-top: 2.8rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  opacity: 0;
 }
 
 .hero-scroll-hint span {
@@ -377,6 +383,7 @@ body.app-ready #labels-root {
   z-index: 10;
   pointer-events: none;
   opacity: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .sport-overlay-name {
@@ -482,6 +489,7 @@ body.app-ready #labels-root {
   display: flex;
   align-items: center;
   justify-content: center;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .loader-inner {
@@ -489,18 +497,43 @@ body.app-ready #labels-root {
   width: 280px;
 }
 
+.loader-count-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  font-family: var(--font-display);
+}
+
+.loader-count {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.loader-count-pct {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 0.15rem;
+}
+
 .loader-logo-img {
-  height: 40px;
+  height: 30px;
   width: auto;
   object-fit: contain;
-  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+  opacity: 0.55;
   filter: brightness(1.1);
 }
 
 .loader-bar {
   width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 1px;
   overflow: hidden;
 }
@@ -510,13 +543,13 @@ body.app-ready #labels-root {
   width: 0%;
   background: var(--accent);
   border-radius: 1px;
-  transition: width 0.3s ease;
+  transition: width 0.25s ease;
 }
 
 .loader-text {
-  margin-top: 1rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  margin-top: 0.8rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
 }

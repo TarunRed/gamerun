@@ -1,37 +1,56 @@
 import gsap from 'gsap'
 
 export function animateHeroIn() {
-  const tl = gsap.timeline({ delay: 0.3 })
+  const tl = gsap.timeline({ delay: 0.2 })
 
-  tl.to('.hero-eyebrow', {
-    opacity: 1,
+  // Eyebrow slides in from left
+  tl.from('.hero-eyebrow', {
+    xPercent: -8,
+    opacity: 0,
     duration: 0.7,
     ease: 'power2.out',
   })
-  .to('.hero-title', {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    ease: 'power3.out',
+
+  // Title lines: masked slide-up (Awwwards pattern — overflow:hidden + translateY)
+  .from('.hero-title .line-i', {
+    yPercent: 105,
+    duration: 0.9,
+    stagger: 0.1,
+    ease: 'expo.out',
   }, '-=0.3')
-  .to('.hero-sub', {
-    opacity: 1,
-    duration: 0.8,
+
+  // Subtitle fade up
+  .from('.hero-sub', {
+    y: 18,
+    opacity: 0,
+    duration: 0.7,
     ease: 'power2.out',
-  }, '-=0.5')
-  .to('.hero-actions', {
-    opacity: 1,
+  }, '-=0.4')
+
+  // CTA button scales in slightly
+  .from('.hero-cta', {
+    y: 14,
+    opacity: 0,
     duration: 0.6,
     ease: 'power2.out',
   }, '-=0.4')
-  .to('.hero-metrics', {
-    opacity: 1,
-    duration: 0.6,
+
+  // Metrics count up slightly after CTA
+  .from('.hero-metric', {
+    y: 10,
+    opacity: 0,
+    duration: 0.5,
+    stagger: 0.08,
     ease: 'power2.out',
   }, '-=0.3')
-  .to('.hero-scroll-hint', {
-    opacity: 1,
-    duration: 0.6,
+
+  // Scroll hint
+  .from('.hero-scroll-hint', {
+    opacity: 0,
+    duration: 0.5,
     ease: 'power2.out',
-  }, '-=0.2')
+  }, '-=0.1')
+
+  // Make sure the parent wrapper itself is visible
+  gsap.set('.hero-content', { opacity: 1 })
 }

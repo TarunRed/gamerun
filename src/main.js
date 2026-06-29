@@ -4,6 +4,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+import Lenis from 'lenis'
 
 import { SPORTS } from './sports/index.js'
 import { createLighting } from './scene/lighting.js'
@@ -16,6 +17,12 @@ import { animateHeroIn } from './ui/hero.js'
 import { updateSportOverlay, hideSportOverlay } from './ui/overlay.js'
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
+
+// ─── Lenis smooth scroll ──────────────────────────────────────────────────────
+const lenis = new Lenis({ lerp: 0.1, syncTouch: true })
+lenis.on('scroll', ScrollTrigger.update)
+gsap.ticker.add((time) => lenis.raf(time * 1000))
+gsap.ticker.lagSmoothing(0)
 
 // ─── Renderer ────────────────────────────────────────────────────────────────
 
@@ -40,14 +47,17 @@ const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerH
 
 const { posSpline, lookSpline } = buildCameraPath()
 
-// ─── Loader bar ───────────────────────────────────────────────────────────────
+// ─── Loader ───────────────────────────────────────────────────────────────────
 
-const loaderFill = document.querySelector('.loader-fill')
-const loaderTxt  = document.querySelector('.loader-text')
+const loaderFill  = document.querySelector('.loader-fill')
+const loaderTxt   = document.querySelector('.loader-text')
+const loaderCount = document.querySelector('.loader-count')
 
 function setLoadProgress(pct) {
-  loaderFill.style.width = Math.round(pct * 100) + '%'
-  loaderTxt.textContent  = pct < 1 ? `Loading athletes... ${Math.round(pct * 100)}%` : 'Ready'
+  const n = Math.round(pct * 100)
+  loaderFill.style.width = n + '%'
+  if (loaderCount) loaderCount.textContent = n
+  loaderTxt.textContent = pct < 1 ? 'Preparing arenas' : 'Ready'
 }
 
 // ─── Zone registry — sparse array, zones arrive progressively ─────────────────
@@ -75,14 +85,24 @@ async function init() {
   registerZone(firstModel, 0)
   setLoadProgress(1 / SPORTS.length)
 
-  // Dismiss loader and reveal app — body.app-ready lifts the FOUC opacity:0
+  // Dismiss loader: count to 100, then curtain wipes UP off screen (Awwwards pattern)
   const loader = document.getElementById('loader')
   document.body.classList.add('app-ready')
-  gsap.to(loader, {
-    opacity: 0, duration: 0.5, ease: 'power2.inOut',
-    onComplete: () => { loader.style.display = 'none' },
-  })
-  animateHeroIn()
+
+  gsap.timeline()
+    .to(loaderCount, {
+      textContent: 100,
+      snap: { textContent: 1 },
+      duration: 0.5,
+      ease: 'power2.in',
+    })
+    .to(loader, {
+      clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
+      duration: 0.85,
+      ease: 'expo.inOut',
+      onComplete: () => { loader.style.display = 'none' },
+    }, '+=0.15')
+    .call(() => animateHeroIn(), null, '-=0.3')
 
   const scrollState = createScrollDriver()
   initNav()

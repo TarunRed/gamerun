@@ -11,12 +11,15 @@
       *{box-sizing:border-box;margin:0;padding:0}
       html{background:#06070a}
       body{background:#06070a;color:#e8eaf0;font-family:sans-serif;overflow-x:hidden}
-      #loader{position:fixed;inset:0;z-index:1000;background:#06070a;display:flex;align-items:center;justify-content:center}
+      #loader{position:fixed;inset:0;z-index:1000;background:#06070a;display:flex;align-items:center;justify-content:center;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
       .loader-inner{text-align:center;width:280px}
-      .loader-logo-img{height:40px;width:auto;display:block;margin:0 auto 2rem;object-fit:contain}
-      .loader-bar{width:100%;height:2px;background:rgba(255,255,255,.1);border-radius:1px;overflow:hidden}
+      .loader-count-wrap{display:flex;align-items:baseline;justify-content:center;margin-bottom:1.2rem;font-family:sans-serif}
+      .loader-count{font-size:5rem;font-weight:700;color:#fff;line-height:1;letter-spacing:-.03em}
+      .loader-count-pct{font-size:1.4rem;font-weight:400;color:#6b7280;margin-left:.15rem}
+      .loader-logo-img{height:32px;width:auto;display:block;margin:1.5rem auto 0;object-fit:contain;opacity:.6}
+      .loader-bar{width:100%;height:1px;background:rgba(255,255,255,.08);border-radius:1px;overflow:hidden}
       .loader-fill{height:100%;width:0%;background:#00f0ff;border-radius:1px}
-      .loader-text{margin-top:1rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#6b7280}
+      .loader-text{margin-top:.8rem;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#6b7280}
       #sport-nav,#scroll-container,#marketing-wrapper,#sport-overlay,#labels-root{opacity:0;pointer-events:none}
     </style>
 
@@ -30,9 +33,12 @@
     <!-- Loading screen -->
     <div id="loader">
       <div class="loader-inner">
-        <img class="loader-logo-img" src="/gamerun-logo.png" alt="GameRun" />
+        <div class="loader-count-wrap">
+          <span class="loader-count">0</span><span class="loader-count-pct">%</span>
+        </div>
         <div class="loader-bar"><div class="loader-fill"></div></div>
         <div class="loader-text">Loading arenas...</div>
+        <img class="loader-logo-img" src="/gamerun-logo.png" alt="GameRun" />
       </div>
     </div>
 
@@ -57,7 +63,11 @@
       <section id="hero-section">
         <div class="hero-content">
           <p class="hero-eyebrow">AI-Powered Coaching Advantage</p>
-          <h1 class="hero-title">Turn Every<br/>Game Video<br/>Into an Edge.</h1>
+          <h1 class="hero-title">
+            <span class="line"><span class="line-i">Turn Every</span></span>
+            <span class="line"><span class="line-i">Game Video</span></span>
+            <span class="line"><span class="line-i">Into an Edge.</span></span>
+          </h1>
           <p class="hero-sub">Upload game film. Get a pro-level performance report with exactly what to train and how to fix it — in under 2 minutes.</p>
           <div class="hero-actions">
             <a class="hero-cta" href="https://gamerun.ai" target="_blank">Analyze Your Game Free →</a>

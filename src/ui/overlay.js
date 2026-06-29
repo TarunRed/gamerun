@@ -8,28 +8,38 @@ export function updateSportOverlay(newIndex) {
   currentIndex = newIndex
 
   const overlay = document.getElementById('sport-overlay')
-  const nameEl = overlay.querySelector('.sport-overlay-name')
+  const nameEl    = overlay.querySelector('.sport-overlay-name')
   const taglineEl = overlay.querySelector('.sport-overlay-tagline')
-  const sport = SPORTS[newIndex]
+  const sport     = SPORTS[newIndex]
 
-  // Slam out → swap text → slam in
   const tl = gsap.timeline()
-  tl.to(overlay, { opacity: 0, y: 10, duration: 0.2, ease: 'power2.in' })
+
+  // Wipe out to the right, swap, wipe in from the left
+  tl.to(overlay, {
+      clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+      opacity: 1,
+      duration: 0.25,
+      ease: 'expo.in',
+    })
     .call(() => {
-      nameEl.textContent = sport.name.toUpperCase()
+      nameEl.textContent  = sport.name.toUpperCase()
       taglineEl.textContent = sport.tagline
-      overlay.style.setProperty('--sport-color', sport.accentHex)
-      nameEl.style.color = '#fff'
       taglineEl.style.color = sport.accentHex
     })
-    .to(overlay, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' })
+    .fromTo(overlay,
+      { clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' },
+      { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.55, ease: 'expo.out' }
+    )
 }
 
 export function hideSportOverlay() {
   gsap.to(document.getElementById('sport-overlay'), {
-    opacity: 0,
+    clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
     duration: 0.3,
-    ease: 'power2.in',
+    ease: 'expo.in',
+    onComplete: () => {
+      gsap.set(document.getElementById('sport-overlay'), { opacity: 0 })
+    },
   })
   currentIndex = -1
 }
