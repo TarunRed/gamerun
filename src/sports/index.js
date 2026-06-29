@@ -46,7 +46,7 @@ export const SPORTS = [
     floorColor: 0x041006,
     fogColor: 0x011004,
     modelPath: '/models/soccer.glb',
-    bgPath: '/backgrounds/soccer.webp',
+    bgPath: '/backgrounds/football.webp',
     ballColor: null,
     stats: [
       { name: 'Sprint Speed',   value: '21.6', unit: 'mph', joint: 'foot' },
