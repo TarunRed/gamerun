@@ -2,8 +2,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --accent:  #00f0ff;
-  --accent2: #ff3c6e;
+  --accent:  #F9A800;
+  --accent2: #1E4FA3;
   --dark:    #06070a;
   --mid:     #111318;
   --text:    #e8eaf0;
@@ -122,14 +122,14 @@ body.app-ready #labels-root {
   text-decoration: none;
   border-radius: 6px;
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 30px rgba(249, 168, 0, 0.3);
   pointer-events: auto;
 }
 
 .hero-cta:hover {
   background: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 0 40px rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 40px rgba(249, 168, 0, 0.5);
 }
 
 .hero-metrics {
@@ -343,14 +343,14 @@ body.app-ready #labels-root {
 
 /* Active state — glowing cyan capsule */
 .sport-pill.active {
-  background: rgba(0, 240, 255, 0.14);
+  background: rgba(249, 168, 0, 0.14);
   color: var(--accent);
-  border: 1px solid rgba(0, 240, 255, 0.28);
+  border: 1px solid rgba(249, 168, 0, 0.28);
   transform: translateY(-1px) scale(1.04);
   box-shadow:
-    0 0 16px rgba(0, 240, 255, 0.18),
+    0 0 16px rgba(249, 168, 0, 0.18),
     0 4px 12px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(0, 240, 255, 0.15);
+    inset 0 1px 0 rgba(249, 168, 0, 0.15);
 }
 
 /* CTA button */
@@ -366,13 +366,13 @@ body.app-ready #labels-root {
   text-decoration: none;
   border-radius: 100px;
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 20px rgba(249, 168, 0, 0.3);
 }
 
 .nav-cta:hover {
   background: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 30px rgba(249, 168, 0, 0.5);
 }
 
 /* ─── Sport overlay ────────────────────────────────── */
@@ -414,7 +414,7 @@ body.app-ready #labels-root {
 
 /* ─── Joint dot — glowing indicator at each body part (ai.io style) ─── */
 .joint-dot {
-  --dot-color: #00f0ff;
+  --dot-color: #F9A800;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -618,7 +618,7 @@ body.app-ready #labels-root {
 }
 
 .step-card:hover {
-  border-color: rgba(0,240,255,0.25);
+  border-color: rgba(249,168,0,0.25);
   transform: translateY(-4px);
 }
 
@@ -627,7 +627,7 @@ body.app-ready #labels-root {
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1;
-  color: rgba(0,240,255,0.12);
+  color: rgba(249,168,0,0.12);
   margin-bottom: 0.5rem;
   letter-spacing: -0.03em;
 }
@@ -667,8 +667,8 @@ body.app-ready #labels-root {
 }
 
 .feature-card:hover {
-  background: rgba(0,240,255,0.04);
-  border-color: rgba(0,240,255,0.2);
+  background: rgba(249,168,0,0.04);
+  border-color: rgba(249,168,0,0.2);
 }
 
 .feature-icon {
@@ -707,14 +707,14 @@ body.app-ready #labels-root {
   transition: border-color 0.2s;
 }
 
-.coach-card:hover { border-color: rgba(0,240,255,0.2); }
+.coach-card:hover { border-color: rgba(249,168,0,0.2); }
 
 .coach-initials {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(0,240,255,0.1);
-  border: 1px solid rgba(0,240,255,0.2);
+  background: rgba(249,168,0,0.1);
+  border: 1px solid rgba(249,168,0,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -755,7 +755,7 @@ body.app-ready #labels-root {
   transition: border-color 0.3s;
 }
 
-.testimonial-card:hover { border-color: rgba(0,240,255,0.2); }
+.testimonial-card:hover { border-color: rgba(249,168,0,0.2); }
 
 .testimonial-quote {
   font-size: 0.95rem;
@@ -777,8 +777,8 @@ body.app-ready #labels-root {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(0,240,255,0.1);
-  border: 1px solid rgba(0,240,255,0.2);
+  background: rgba(249,168,0,0.1);
+  border: 1px solid rgba(249,168,0,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -837,8 +837,8 @@ body.app-ready #labels-root {
 
 /* ─── Final CTA section ─────────────────────────────────────────────────── */
 .mkt-section--cta {
-  background: radial-gradient(ellipse at 50% 0%, rgba(0,240,255,0.06) 0%, transparent 65%);
-  border-top: 1px solid rgba(0,240,255,0.1);
+  background: radial-gradient(ellipse at 50% 0%, rgba(249,168,0,0.06) 0%, transparent 65%);
+  border-top: 1px solid rgba(249,168,0,0.1);
   text-align: center;
 }
 
